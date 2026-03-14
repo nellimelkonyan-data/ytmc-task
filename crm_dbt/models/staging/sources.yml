@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: crm_raw      # this is the schema you created in ClickHouse
+    schema: crm_raw
+    tables:
+      - name: activity
+      - name: activity_types
+      - name: deal_changes
+      - name: fields
+      - name: stages
+      - name: users

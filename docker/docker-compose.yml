@@ -1,0 +1,75 @@
+services:
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse_server
+    ports:
+      - "8123:8123"
+    environment:
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: mysecretpassword
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    restart: always
+
+  clickhouse-client:
+    image: clickhouse/clickhouse-client
+    depends_on:
+      - clickhouse
+    entrypoint: ["/bin/sh"]
+  
+  postgres:
+    image: postgres:15
+    container_name: airflow_postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  airflow:
+    build: .
+    image: apache/airflow:2.9.2
+    container_name: airflow
+    depends_on:
+      - postgres
+      - clickhouse
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: "HiPPgP8YLbBzsbPozK_bbJ_BgMVu9QzJBssOs_5u9zI="
+      AIRFLOW__WEBSERVER__SECRET_KEY: "mysecretkey"
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../:/opt/project/
+      - ../airflow/dags/:/opt/airflow/dags
+    command: >
+      bash -c "airflow db init &&
+               airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin &&
+               airflow webserver"
+    restart: unless-stopped
+  airflow-scheduler:
+    build: .
+    image: apache/airflow:2.9.2
+    depends_on:
+      - airflow
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: 'HiPPgP8YLbBzsbPozK_bbJ_BgMVu9QzJBssOs_5u9zI='
+      AIRFLOW__WEBSERVER__SECRET_KEY: "mysecretkey"
+    command: scheduler
+    volumes:
+      - ../:/opt/project/
+      - ../airflow/dags/:/opt/airflow/dags
+       
+
+volumes:
+  clickhouse_data:
+  postgres_data:

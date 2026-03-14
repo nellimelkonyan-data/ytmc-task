@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_users
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+
+      - name: modified
+        tests:
+          - not_null
+  - name: stg_fields
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+  - name: stg_field_options
+    columns:
+      - name: field_id
+        tests:
+          - not_null
+
+      - name: option_id
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - field_id
+            - option_id
+  - name: stg_activity_types
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique

@@ -1,0 +1,6 @@
+pandas
+requests
+clickhouse-connect
+dbt-core
+dbt-clickhouse
+python-dotenv

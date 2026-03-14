@@ -1,0 +1,19 @@
+crm_dbt:
+  target: dev
+  outputs:
+    staging:
+      type: clickhouse
+      schema: crm_staging         
+      host: clickhouse          
+      user: default            
+      password: mysecretpassword  
+      port: 8123               
+      secure: false            
+    gold:
+      type: clickhouse
+      schema: crm_gold        
+      host: clickhouse          
+      user: default            
+      password: mysecretpassword  
+      port: 8123               
+      secure: false            

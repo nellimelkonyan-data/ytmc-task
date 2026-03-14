@@ -1,0 +1,53 @@
+version: 2
+
+models:
+
+  - name: dim_users
+    description: "User dimension table"
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+
+      - name: email
+        tests:
+          - not_null
+
+
+  - name: dim_stages
+    description: "Sales pipeline stages"
+    columns:
+      - name: stage_id
+        tests:
+          - unique
+          - not_null
+
+
+  - name: fact_activities
+    description: "All CRM activities"
+    columns:
+      - name: activity_id
+        tests:
+          - unique
+          - not_null
+
+      - name: user_id
+        tests:
+          - relationships:
+              to: ref('dim_users')
+              field: user_id
+
+
+  - name: fact_deal_stage_history
+    description: "Deal stage history"
+    columns:
+      - name: deal_id
+        tests:
+          - not_null
+
+      - name: stage_id
+        tests:
+          - relationships:
+              to: ref('dim_stages')
+              field: stage_id

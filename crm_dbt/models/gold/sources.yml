@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: crm_staging      # this is the schema you created in ClickHouse
+    schema: crm_staging
+    tables:
+      - name: stg_activity
+      - name: stg_activity_types
+      - name: stg_deal_changes
+      - name: stg_fields
+      - name: stg_stages
+      - name: stg_users
