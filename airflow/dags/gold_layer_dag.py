@@ -12,8 +12,8 @@ with DAG(
 ) as dag:
     wait_for_silver = ExternalTaskSensor(
         task_id="wait_for_silver",
-        external_dag_id="dbt_silver_dag",
-        external_task_id="run_dbt_silver",
+        external_dag_id="dbt_silver",
+        external_task_id="dbt_run_silver",
         mode="reschedule",
         poke_interval=30,
         timeout=60 * 60,

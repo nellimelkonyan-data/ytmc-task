@@ -12,8 +12,8 @@ with DAG(
 ) as dag:
     wait_for_bronze = ExternalTaskSensor(
         task_id="wait_for_bronze",
-        external_dag_id="load_bronze_dag",
-        external_task_id="load_bronze",
+        external_dag_id="load_bronze",
+        external_task_id="load_bronze_csv",
         mode="reschedule",
         poke_interval=30,
         timeout=60 * 60,
